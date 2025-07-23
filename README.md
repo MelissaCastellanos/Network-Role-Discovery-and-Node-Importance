@@ -20,7 +20,7 @@ The risks associated with Bitcoin OTC trading are mitigated by the maintenance o
 
 There are a total of 5,881 nodes, or ratings, in the dataset with 35,592 edges. Of the 35,592 edges in the network 89% are positive. A visualization of the network is available in Figure 1.  
 
-<img width="1150" height="600" alt="image" src="https://github.com/user-attachments/assets/91e49787-6137-4283-947d-f61408204f2a" />
+<img width="1000" height="600" alt="image" src="https://github.com/user-attachments/assets/91e49787-6137-4283-947d-f61408204f2a" />
 
 *Figure 1. Bitcoin OTC trust weighted signed network. Top 50 nodes by centrality represented by blue points, where directed edges are shown as grey arrows.*
 
