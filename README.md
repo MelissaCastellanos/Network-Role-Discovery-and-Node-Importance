@@ -28,9 +28,7 @@ There are a total of 5,881 nodes, or ratings, in the dataset with 35,592 edges. 
 Roles within a network can be identified through the process of role discovery, which detects nodes with similar functions, connections, or interactions [8][9]. Role discovery leverages network embedding methods to identify the particular role each node plays [9]. This project utilizes Struc2vec and Node2vec, network embedding, to convert each node to a lower-dimensional feature vector. These low-dimensional vectors were clustered using DBSCAN to discover functional roles in the network and potential abnormalities. Using Degree Centrality, Eigenvector Centrality, and Closeness Centrality, each node was then ranked on importance.
 
 ### A. Struc2vec 
-The Struc2vec network embedding method is a framework utilized to derive vector representations that reflect each node’s structural position or role [10]. It’s implemented in this project using the Pandas, Numpy, NetworkX, and Scikit-Learn libraries. 
-The first step in the application of Struc2vec was the creation of a directed graph utilizing the “Source”, “Target” and “Rating” attributes of the Bitcoin OTC Trust dataset. To capture structural characteristics, the degree signature of each node in the network 
-was computed. This signature summarizes the sorted degrees of a node’s neighbors [11]. A cosine similarity matrix was then computed from the degree signatures, indicating which nodes were structurally similar to each other [11]. This was converted into a distance matrix, which was reduced into lower-dimensional embeddings using PCA. 
+The Struc2vec network embedding method is a framework utilized to derive vector representations that reflect each node’s structural position or role [10]. It’s implemented in this project using the Pandas, Numpy, NetworkX, and Scikit-Learn libraries in Python. The first step in the application of Struc2vec was the creation of a directed graph utilizing the “Source”, “Target” and “Rating” attributes of the Bitcoin OTC Trust dataset. To capture structural characteristics, the degree signature of each node in the network was computed. This signature summarizes the sorted degrees of a node’s neighbors [10]. A cosine similarity matrix was then computed from the degree signatures, indicating which nodes were structurally similar to each other [10]. Nodes that were more structually similar were closer together. From here, a bias random walk was used to generate node sequences which contained structually similar nodes. 
 
 ### B. Node2vec 
 
@@ -72,4 +70,3 @@ nodes and their clustering position through the clustering process.
 
 [10] L. Ribeiro, P. Saverese, and D. Figueiredo, “struc2vec: Learning Node Representations from Structural Identity,” doi: https://doi.org/10.1145/3097983.3098061.
  
-[11] Figueiredo, Daniel & Ribeiro, Leonardo F. R. & Saverese, Pedro. (2017). struc2vec: Learning Node Representations from Structural Identity. 10.48550/arXiv.1704.03165.  
