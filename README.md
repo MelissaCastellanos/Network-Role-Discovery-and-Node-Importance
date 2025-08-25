@@ -1,13 +1,13 @@
 
 # Network Role Discovery and Node Importance in the Bitcoin OTC Trust Network
-## Introduction
+## I. Introduction
 Bitcoin over-the-counter (OTC) trading is the process of buying and selling large quantities of Bitcoin directly between parties without public visibility [1][2].  It’s a favorable trading method among high-net worth individuals and institutional investors who are seeking discretion or avoiding market place disruptions [1]. Unlike typical exchange based trading, Bitcoin OTC trading offers increased liquidity, flexibility, and secrecy [2]. Due to the inherent ambiguity of Bitcoin OTC trading, it’s not without risks. One of the biggest challenges in OTC traders encounter is the counterparty risk, where one party fails to deliver after the other has already complied with the agreed-upon obligations. To combat this potential risk, it’s critical to identify reliable, trustworthy traders as well as unreliable, untrustworthy traders. Network embedding enables the detection of trusted users and bad actors by identifying meaningful node representations within a given network [3]. Through network role discovery and importance evaluation, it becomes possible to discern irregularities which might indicate untrustworthy traders [3]. 
 
 This project aims to analyze the Bitcoin OTC trust network to distinguish key players and potentially risky users through the discovery of node roles and their relative importance. Low-dimensional feature vectors are generated using two different network embedding techniques, Node2vec and Struc2vec. Node2vec is mainly utilized for node classification, while Struc2vec aims to determine structural equivalence [4]. By utilizing these two network embedding methods, we get a better understanding of the network’s structure and behavior. These embeddings are then clustered to reveal structural roles within the network, which are evaluated using Eigenvector Centrality, Degree Centrality, and Closeness Centrality. 
 
 The following report outlines the development of the low-dimensional feature vectors, the role discovery process, and the evaluation of each identified role. Section II describes the data utilized for the network embedding. Section III addresses both embedding techniques, the clustering process, and the calculation of centrality and node importance measures. Section IV and V discuss results and conclusions. 
 
-## Data Description
+## II. Data Description
 The risks associated with Bitcoin OTC trading are mitigated by the maintenance of a user reputation record [5][6].  [The Bitcoin OTC trust weighted signed network dataset](https://snap.stanford.edu/data/soc-sign-bitcoin-otc.html) describes this record. The dataset contains data on how members of Bitcoin OTC rate each other’s trustworthiness on a scale of -10 to 10, with 10 being total trust. Attributes of the dataset are described in Table 1.  
 
 #### Table 1. Bitcoin OTC Trust Weighted Signed Network Attributes
@@ -24,7 +24,7 @@ There are a total of 5,881 nodes, or ratings, in the dataset with 35,592 edges. 
 
 *Figure 1. Bitcoin OTC trust weighted signed network. Top 50 nodes by centrality represented by blue points, where directed edges are shown as grey arrows.*
 
-## Methodology 
+## III. Methodology 
 Roles within a network can be identified through the process of role discovery, which detects nodes with similar functions, connections, or interactions [8][9]. Role discovery leverages network embedding methods to identify the particular role each node plays [9]. This project utilizes Struc2vec and Node2vec, network embedding, to convert each node to a lower-dimensional feature vector. These low-dimensional vectors were clustered using DBSCAN to discover functional roles in the network and potential abnormalities. Using Degree Centrality, Eigenvector Centrality, and Closeness Centrality, each node was then ranked on importance.
 
 ### A. Struc2vec 
@@ -56,8 +56,8 @@ divided by the number of centrality measures calculated (1).
 All 5,881 nodes in the network were then ranked on importance to determine the most influential, and structurally important nodes in the Bitcoin OTC Trust network. Nodes with larger calculated importance values were considered to be key players in the 
 network. While these rankings were done globally, determining the importance of nodes within each cluster could give more insight into the role each node plays in their given cluster. However, to calculate cluster level importance we would have to track nodes and their clustering position through the clustering process.  
 
-## Results 
-## Conclusions
+## IV. Results 
+## V. Conclusions
 
 ## References
 [1] “What is Bitcoin OTC Trading,” Bitcoin.com, 2025. https://www.bitcoin.com/get-started/what-is-bitcoin-otc-trading/ (accessed Jun. 26, 2025). 
