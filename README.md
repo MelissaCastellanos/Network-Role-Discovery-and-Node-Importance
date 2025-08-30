@@ -1,82 +1,95 @@
-
 # Network Role Discovery and Node Importance in the Bitcoin OTC Trust Network
-## I. Introduction
-Bitcoin over-the-counter (OTC) trading is the process of buying and selling large quantities of Bitcoin directly between parties without public visibility [1][2].  It’s a favorable trading method among high-net worth individuals and institutional investors who are seeking discretion or avoiding market place disruptions [1]. Unlike typical exchange based trading, Bitcoin OTC trading offers increased liquidity, flexibility, and secrecy [2]. Due to the inherent ambiguity of Bitcoin OTC trading, it’s not without risks. One of the biggest challenges in OTC traders encounter is the counterparty risk, where one party fails to deliver after the other has already complied with the agreed-upon obligations. To combat this potential risk, it’s critical to identify reliable, trustworthy traders as well as unreliable, untrustworthy traders. Network embedding enables the detection of trusted users and bad actors by identifying meaningful node representations within a given network [3]. Through network role discovery and importance evaluation, it becomes possible to discern irregularities which might indicate untrustworthy traders [3]. 
 
-This project aims to analyze the Bitcoin OTC trust network to distinguish key players and potentially risky users through the discovery of node roles and their relative importance. Low-dimensional feature vectors are generated using two different network embedding techniques, Node2vec and Struc2vec. Node2vec is mainly utilized for node classification, while Struc2vec aims to determine structural equivalence [4]. By utilizing these two network embedding methods, we get a better understanding of the network’s structure and behavior. These embeddings are then clustered to reveal structural roles within the network, which are evaluated using Eigenvector Centrality, Degree Centrality, and Closeness Centrality. 
+## Introduction
+Bitcoin over-the-counter (OTC) trading involves direct transactions between buyers and sellers without exchange visibility. While it offers liquidity, flexibility, and discretion, it carries significant counterparty risk, where one party may fail to deliver after the other has already complied with the agreed-upon obligations.  
 
-The following report outlines the development of the low-dimensional feature vectors, the role discovery process, and the evaluation of each identified role. Section II describes the data utilized for the network embedding. Section III addresses both embedding techniques, the clustering process, and the calculation of centrality and node importance measures. Section IV and V discuss results and conclusions. 
+This project analyzes the **Bitcoin OTC Trust Network** to:  
+- Discover **functional roles** of participants using **Node2Vec** (flow-based similarity) and **Struc2Vec** (structural similarity).  
+- Detect clusters of **trusted vs. distrusted actors** via density-based clustering.  
+- Evaluate **node importance** with multi-centrality measures.  
 
-## II. Data Description
-The risks associated with Bitcoin OTC trading are mitigated by the maintenance of a user reputation record [5][6].  [The Bitcoin OTC trust weighted signed network dataset](https://snap.stanford.edu/data/soc-sign-bitcoin-otc.html) describes this record. The dataset contains data on how members of Bitcoin OTC rate each other’s trustworthiness on a scale of -10 to 10, with 10 being total trust. Attributes of the dataset are described in Table 1.  
+Together, these methods provide insight into **community behaviors, structural equivalence, and influential actors** within the OTC network.  
 
-#### Table 1. Bitcoin OTC Trust Weighted Signed Network Attributes
-|Attribute    |Type             |Example Value   |Description|
-|-------------|-----------------|----------------|-----------|
-|Source       |Numeric (integer)|6               |Node id of source, i.e. rater|
-|Target       |Numeric (integer)|2               |Node id of target i.e. ratee |
-|Rating       |Numeric (integer)|4               |The source's rating for the target ranging from -10 to 10 in steps of 1|
-|Time         |Numeric (float)  |1289241911.72836| Time of rating, measured as seconds since Epoch|
+This repository provides a summary of a group project I contributed to as part of the Advanced Data Analytics graduate course at Lewis University. The complete project report is included in the repository files for reference.
+---
 
-There are a total of 5,881 nodes, or ratings, in the dataset with 35,592 edges. Of the 35,592 edges in the network 89% are positive. A visualization of the network is available in Figure 1.  
+## Dataset
+We use the [Bitcoin OTC trust weighted signed network dataset](https://snap.stanford.edu/data/soc-sign-bitcoin-otc.html), which records user-assigned trust ratings on a scale of -10 (distrust) to +10 (total trust).  
 
-<img width="900" height="600" alt="image" src="https://github.com/user-attachments/assets/91e49787-6137-4283-947d-f61408204f2a" />
+**Dataset Summary**:  
+- **Nodes (users):** 5,881  
+- **Edges (ratings):** 35,592  
+- **Positive edges:** 89%  
+- **Attributes:**  
 
-*Figure 1. Bitcoin OTC trust weighted signed network. Top 50 nodes by centrality represented by blue points, where directed edges are shown as grey arrows.*
+| Attribute | Type  | Example | Description |
+|-----------|-------|---------|-------------|
+| Source    | int   | 6       | Node ID of rater |
+| Target    | int   | 2       | Node ID of ratee |
+| Rating    | int   | 4       | Trust score (-10 to +10) |
+| Time      | float | 1289241911.7 | Timestamp (Unix epoch) |
 
-## III. Methodology 
-Roles within a network can be identified through the process of role discovery, which detects nodes with similar functions, connections, or interactions [8][9]. Role discovery leverages network embedding methods to identify the particular role each node plays [9]. This project utilizes Struc2vec and Node2vec, network embedding, to convert each node to a lower-dimensional feature vector. These low-dimensional vectors were clustered using DBSCAN to discover functional roles in the network and potential abnormalities. Using Degree Centrality, Eigenvector Centrality, and Closeness Centrality, each node was then ranked on importance.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/91e49787-6137-4283-947d-f61408204f2a" width="800">
+</p>
+<p align="center"><i>Figure 1. Bitcoin OTC Trust Network. Blue points: top-50 nodes by centrality.</i></p>
 
-### A. Struc2vec 
-Struct2vec is utilized to create vector representations that reflect each node’s structural position or role in the network[10]. It’s implemented in this project using the Pandas, NumPy, NetworkX, and Scikit-Learn libraries in Python. The first step in its application was the creation of a directed graph from the Bitcoin OTC Trust dataset, using the “Source”, “Target” and “Rating” fields. These columns defined network edges and their direction while the graph served as the foundation for analyzing the structural realtionship between nodes.
+---
 
-To understand the structure around each node, I calculated a degree signature, which is a sorted list of the degrees (number of connections) of that node’s neighbors [10]. This helped summarize the local structural pattern for each node. A cosine similarity matrix was then computed from the degree signatures to measure which nodes were structurally similar to each other. Nodes that were more structually similar appeared closer in the similarity space [10]. Using this information, bias random walks generated node sequences, favoring transitions between stuctually similar nodes. These sequences of structually similar nodes trained the model created and captured learned latent vector representations that demonstrated structural hierarchies in the network. The resulting embeddings allowed for the grouping of nodes with similar roles.   
+## Methodology
 
-### B. Node2vec 
-Node2vec, unlike Struct2vec aims to derive vector representations that reflect each node’s structural position while preserving local neighborhoods of nodes. The Node2vec framework assumes that similar nodes are likely to be neighbors, while considering that nodes that are not neighbors may also be similar [11]. The algorithm was applied using Pandas, NumPy, and NetworkX libraries in Python. From the Bitcoin OTC Trust dataset, the “Source” and “Target” columns were retained for embedding and were converted into an undirected graph. Each unique identifier in the graph was set as a node while each pairwise interaction as an edge.
+### 1. **Embeddings**
+- **Struc2Vec**  
+  - Captures **structural equivalence** (nodes in similar roles, even if far apart).  
+  - Built via degree signatures + biased random walks over structurally similar nodes.  
+- **Node2Vec**  
+  - Captures **flow/community similarity** (nodes that co-occur in random walks).  
+  - Config: 64-dim embeddings, 30-step walk length, 100 walks/node, window=10.  
 
-The Node2vec hyperparameters were set to a 64-dimensional embedding space, 30 step walk length, and 100 walks per node. The return parameter*p* and in-out parameter *q* were both set to one to balance exploration and exploitation in the random walks.  Four parallel worker processes were then allocated to parallelize walk generation. The created model was fit with an underlying Word2vec training routine, established with a window size of 10, a minimum node count threshold of one, and a modest batch size. Upon convergence, the **wv**	attribute was used to access the resulting embedded vectors. These vectors and their matching node Id’s were placed into Pandas DataFrame, for use in clustering and role detection. 
+### 2. **Clustering**
+- Applied **DBSCAN**, **HDBSCAN**, and **Gaussian Mixture Models (GMM)** on embeddings.  
+- Validated results with **silhouette score** and **Davies-Bouldin Index**.  
+- Combined cluster profiles with network metrics such as in-degree, out-degree, and transaction volume, to identify different participant roles → *distributors*, *absorbers*, and *intermediaries*.
 
-### C. Clustering and Role Discovery
-To identify different roles in the Bitcoin OTC Trust dataset, the Struct2vec and Node2vec embeddings were clustered using the DBSCAN algorithm. Identifying columns were separated from both sets of embeddings and the embeddings were converted into NumPy arrays which were compatible with Scikit-Learn clustering routines. Both Strut2vec and Node2vec created a compact feature space from graph structures, so no further dimensionality reduction was necessary before applying the clustering algorithm. 
+### 3. **Node Importance**
+Utilized **multi-centrality averaging** to determine node importance:  
 
-DBSCAN is a density-based clustering algorithm which groups points based on how densely packed together they are, marking low-density points as outliers [12]. Key hyperparameters include ɛ (the maximum neighborhood radius) and minPts(the minimum number of points required to form a dense region). These parameters were tuned by checking the number of points labeled as noise and ensuring that the number of core clusters were neither trivially small nor excessively fragmented. Since DBSCAN is sensitive to global density variations, HDBSCAN was used to identify clusters across multiple density thresholds without requiring the ɛ parameter. HDBSCAN’s primary parameter min_cluster_size, was set to balance the granularity of detected clusters and avoid overfitting to minor irregularities.
+\[
+\text{Importance} = \frac{\text{Degree} + \text{Eigenvector} + \text{Closeness}}{3}
+\]
 
-A Gaussian Mixture Model (GMM) was then fit to each embedding space, treating cluster assignments as latent probability distributions in the continuous feature space. Each model was evaluated with a varying number of mixture components using the Bayesian Information Criterion (BIC) to select optimal cluster count and assign each node to the component with the highest posterior probability. Across DBSCAN, HDBSCAN, and GMM, we compared clustering validity using silhouette scores and the Davies-Bouldin Index, selecting the most stable partitioning for subsequent role analysis.
+- **Degree Centrality** → number of direct connections per node.  
+- **Eigenvector Centrality** → influence on well-connected neighbors.  
+- **Closeness Centrality** → efficiency of reaching all other nodes.  
 
-Once cluster labels were assigned, they were merged with the network-level metrics computed earlier (e.g., in-degree, out-degree, total transaction volume, and average transaction volume for each node) to create concise behavior profiles for each group. The profiles served as the basis for role extraction. Clusters with high average out-degree and volume were flagged as potential distributors, those with high in-degree but low out-degree as absorbers, while clusters with balanced yet modest transaction metrics as intermediaries. Cluster compositions were compared across Struc2Vec and Node2Vec to distinguish roles arising from directional transactional patterns versus those emerging from structural similarity in the broader network.
+---
 
-### D. Node Evaluation
-To quantify the importance of nodes in the Bitcoin OTC Trust network, we calculated three centrality measures, Degree Centrality, Eigenvector Centrality and Closeness Centrality. Degree Centrality measured the number of connections each node had, Eigenvector Centrality quantified the influence of each node in the network, and Closeness Centrality calculated the ‘closeness’ of each node to all other nodes. All three measures of centrality were normalized and averaged to compute node importance using Multi-Centrality Averaging. Node importance was defined as the sum of all normalized centrality measures, 
-divided by the number of centrality measures calculated (1).  
+## Results
+- **Node2Vec** revealed communities of *everyday traders, optimistic raters, regulars, and distrusted cohorts*.  
+- **Struc2Vec** uncovered *backbone participants, elite givers, and strong negatives* based on positional similarity.  
+- Centrality analysis highlighted the most influential hubs and measured how their impact compared to the rest of the network.
 
-(1)
-***Importance  = (Degree Centrality + Eigenvector Centrality + Closeness Centrality) / 3***
+---
 
-All 5,881 nodes in the network were then ranked on importance to determine the most influential, and structurally important nodes in the Bitcoin OTC Trust network. Nodes with larger calculated importance values were considered to be key players in the 
-network. While these rankings were done globally, determining the importance of nodes within each cluster could give more insight into the role each node plays in their given cluster. However, to calculate cluster level importance we would have to track nodes and their clustering position through the clustering process.  
+## Conclusions
+- **Complementary Insights:** Node2Vec captures transactional flows, while Struc2Vec surfaces role-based equivalence.  
+- **Risk Management:** Embedding + clustering can flag suspicious or untrustworthy counterparties.  
+- **Regulatory Use:** Clusters with negative/unreciprocated trust can guide oversight.  
+- **Future Work:**  
+  - Incorporate **temporal dynamics** to track role evolution.  
+  - Test **alternative embeddings/clustering** for robustness.  
+  - Enrich analysis with **transaction metadata (e.g., USD volume)**.  
 
-## IV. Results 
-## V. Conclusions
+---
 
 ## References
-[1] “What is Bitcoin OTC Trading,” Bitcoin.com, 2025. https://www.bitcoin.com/get-started/what-is-bitcoin-otc-trading/ (accessed Jun. 26, 2025). 
-
-[2] “What is OTC crypto trading, and how does it work?,” Cointelegraph, Mar. 2024. https://cointelegraph.com/explained/crypto-otc-trading (accessed Jun. 26, 2025) 
-
-[3] Wang, Y., Yao, Y., Tong, H., Xu, F., and  Lu, J. “A Brief Review of Network Embedding” Big Data Mining and Analytics, vol. 2, no. 1, pp. 35–47, Mar. 2019, doi: https://doi.org/10.26599/bdma.2018.9020029  
-
-[4] K. Huang, C. Xiao, L. M. Glass, M. Zitnik, and J. Sun, “SkipGNN: predicting molecular interactions with skip-graph networks,” Scientific Reports, vol. 10, no. 1, Dec. 2020, doi: https://doi.org/10.1038/s41598-020-77766-9.  
-
-[5] S. Kumar, F. Spezzano, V.S. Subrahmanian, C. Faloutsos. Edge Weight Prediction in Weighted Signed Networks. IEEE International Conference on Data Mining (ICDM), 2016. 
-
-[6] S. Kumar, B. Hooi, D. Makhija, M. Kumar, V.S. Subrahmanian, C. Faloutsos. REV2: Fraudulent User Prediction in Rating Platforms. 11th ACM International Conference on Web Searchand Data Mining (WSDM), 2018. 
-
-[7] A. Grover and J. Leskovec, “node2vec: Scalable Feature Learning for Networks,” in Proc. 22nd ACM SIGKDD Int. Conf. Knowledge Discovery and Data Mining, 2016, pp. 855-864 
-
-[8] Network Embedding for Role Discovery: Concepts, Tools, and Applications, 2022. https://markheimann.github.io/tutorials/NetworkRoleDiscovery (accessed Jul. 02, 2025). 
-
-[9] P. Szczurek, “Role Discovery in Networks,” presented at: DATA-61000-00 Lecture, Lewis University, Romeville, IL, Jun. 2025. 
-
-[10] L. Ribeiro, P. Saverese, and D. Figueiredo, “struc2vec: Learning Node Representations from Structural Identity,” doi: https://doi.org/10.1145/3097983.3098061.
- 
+1. [What is Bitcoin OTC Trading – Bitcoin.com, 2025](https://www.bitcoin.com/get-started/what-is-bitcoin-otc-trading/)  
+2. [What is OTC crypto trading – Cointelegraph, 2024](https://cointelegraph.com/explained/crypto-otc-trading)  
+3. Wang, Y. et al. *A Brief Review of Network Embedding.* Big Data Mining and Analytics, 2019.  
+4. Huang, K. et al. *SkipGNN: Predicting molecular interactions with skip-graph networks.* Sci Rep, 2020.  
+5. Kumar, S. et al. *Edge Weight Prediction in Weighted Signed Networks.* ICDM, 2016.  
+6. Kumar, S. et al. *REV2: Fraudulent User Prediction in Rating Platforms.* WSDM, 2018.  
+7. Grover, A., Leskovec, J. *Node2Vec: Scalable Feature Learning for Networks.* KDD, 2016.  
+8. [Network Embedding for Role Discovery Tutorial, 2022](https://markheimann.github.io/tutorials/NetworkRoleDiscovery)  
+9. Szczurek, P. *Role Discovery in Networks.* Lecture, Lewis University, 2025.  
+10. Ribeiro, L. et al. *Struc2Vec: Learning Node Representations from Structural Identity.* KDD, 2017.  
