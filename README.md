@@ -15,7 +15,10 @@ Together, these methods provide insight into **community behaviors, structural e
 
 ## Table of Contents  
 - [Dataset](#Dataset)  
-- [Methodology](#Methodology)  
+- [Methodology](#Methodology)
+  - [Network Embeddings](#Network-Embeddings)
+  - [Clustering](#Clustering)
+  - [Node Importance](#Node-Importance)
 - [Results](#Results)  
 - [Conclusions](#Conclusions)  
 - [References](#References)
