@@ -13,6 +13,13 @@ Together, these methods provide insight into **community behaviors, structural e
 > [!NOTE]
 > This repository provides a summary of a group project I contributed to as part of the Advanced Data Analytics graduate course at Lewis University. The complete project report is included in the repository files for reference.
 
+## Table of Contents  
+- [Dataset](#Dataset)  
+- [Methodology](#Methodology)  
+- [Results](#Results)  
+- [Conclusions](#Conclusions)  
+- [References](#References)
+
 ## Dataset
 We use the [Bitcoin OTC trust weighted signed network dataset](https://snap.stanford.edu/data/soc-sign-bitcoin-otc.html), which records user-assigned trust ratings on a scale of -10 (distrust) to +10 (total trust). The dataset consists of 5,881 users (nodes) connected by 35,592 trust ratings (edges) with roughly 89% of ratings being positive
 
